@@ -1,5 +1,3 @@
-"use client";
-
 import CardComponent from "@/components/card";
 
 export default function HomePage() {

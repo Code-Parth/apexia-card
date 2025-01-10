@@ -12,6 +12,8 @@ extend({ MeshLineGeometry, MeshLineMaterial })
 useGLTF.preload('/3d-objects/tag.glb')
 useTexture.preload('/3d-objects/apexia ribbon.png')
 
+useTexture.preload('/3d-objects/texture.png')
+
 export default function CardComponent() {
     return (
         <Canvas camera={{ position: [0, 0, 13], fov: 25 }}>
@@ -36,6 +38,7 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
     const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 2, linearDamping: 2 }
     const { nodes, materials } = useGLTF('/3d-objects/tag.glb')
     const texture = useTexture('/3d-objects/apexia ribbon.png')
+    const cardTexture = useTexture('/3d-objects/texture.png')
     const { width, height } = useThree((state) => state.size)
     const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]))
     const [dragged, drag] = useState(false)
@@ -81,6 +84,7 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
         }
     })
 
+    cardTexture.flipY = false
     curve.curveType = 'chordal'
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
@@ -107,7 +111,7 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
                         onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
                         onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
                         <mesh geometry={nodes.card.geometry}>
-                            <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.3} metalness={0.5} />
+                            <meshPhysicalMaterial map={cardTexture} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.3} metalness={0.5} />
                         </mesh>
                         <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
                         <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
